@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Aplicações Renda Fixa</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #38a169;
+            --accent-hover: #2f855a;
+            --surface: #ffffff;
+            --surface-alt: #f7fafc;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .form-group :deep(.p-inputtext),
+        .form-group :deep(.p-selectonemenu),
+        .form-group :deep(.p-inputnumber),
+        .form-group :deep(.p-datepicker),
+        .form-group :deep(.p-inputtextarea) {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: var(--surface-alt);
+        }
+
+        .form-group :deep(.p-inputtext:focus),
+        .form-group :deep(.p-selectonemenu:focus),
+        .form-group :deep(.p-inputnumber:focus),
+        .form-group :deep(.p-datepicker:focus),
+        .form-group :deep(.p-inputtextarea:focus) {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+            outline: none;
+            background: white;
+        }
+
+        .form-group :deep(.p-inputtext:hover),
+        .form-group :deep(.p-selectonemenu:hover),
+        .form-group :deep(.p-inputnumber:hover),
+        .form-group :deep(.p-datepicker:hover) {
+            border-color: var(--primary-light);
+        }
+
+        .outputTextCount {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        :deep(.btn-primary) {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(56, 161, 105, 0.3);
+        }
+
+        :deep(.btn-primary:hover) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(56, 161, 105, 0.4);
+        }
+
+        :deep(.btn-secondary) {
+            padding: 0.875rem 2rem;
+            background: var(--surface-alt);
+            color: var(--text);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        :deep(.btn-secondary:hover) {
+            background: var(--border);
+            transform: translateY(-2px);
+        }
+
+        .table-card {
+            margin-top: 2rem;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .table-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .table-header h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .table-body {
+            padding: 1.5rem;
+        }
+
+        .table-body :deep(.p-datatable) {
+            border: none;
+        }
+
+        .table-body :deep(.p-datatable .p-datatable-header) {
+            background: transparent;
+            border: none;
+            padding: 0 0 1rem 0;
+        }
+
+        .table-body :deep(.p-datatable .p-datatable-thead > tr > th) {
+            background: var(--surface-alt);
+            color: var(--text);
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table-body :deep(.p-datatable .p-datatable-tbody > tr) {
+            transition: all 0.2s ease;
+        }
+
+        .table-body :deep(.p-datatable .p-datatable-tbody > tr:hover) {
+            background: var(--surface-alt);
+        }
+
+        .table-body :deep(.p-datatable .p-datatable-tbody > tr > td) {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-body :deep(.p-paginator) {
+            border: none;
+            background: transparent;
+            padding: 1rem 0 0 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons :deep(.p-button) {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+        }
+
+        .action-buttons :deep(.p-button.p-button-edit) {
+            background: var(--primary);
+            border: none;
+        }
+
+        .action-buttons :deep(.p-button.p-button-edit:hover) {
+            background: var(--primary-light);
+        }
+
+        .action-buttons :deep(.p-button.p-button-danger) {
+            background: #e53e3e;
+            border: none;
+        }
+
+        .action-buttons :deep(.p-button.p-button-danger:hover) {
+            background: #c53030;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .summary-card {
+            background: var(--surface-alt);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .summary-card.invested {
+            border-left: 4px solid var(--primary);
+        }
+
+        .summary-card.returns {
+            border-left: 4px solid var(--accent);
+        }
+
+        .summary-card h4 {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .summary-card.invested .value {
+            color: var(--primary);
+        }
+
+        .summary-card.returns .value {
+            color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <header class="header">
+            <h1>
+                <span style="display: inline-block; vertical-align: middle;">
+                    <i class="pi pi-chart-line" style="font-size: 2rem; margin-right: 0.5rem;"></i>
+                </span>
+                Aplicações Renda Fixa
+            </h1>
+            <p>Gerencie seus investimentos de forma simples e eficiente</p>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <i class="pi pi-plus-circle"></i>
+                    Nova Aplicação
+                </h2>
+            </div>
+            <div class="card-body">
+                <h:form id="form">
+                    <p:messages id="messages" showDetail="true" closable="true">
+                        <p:autoUpdate />
+                    </p:messages>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <p:outputLabel for="nome" value="Nome da Aplicação" />
+                            <p:inputText id="nome" value="#{aplicacaoBean.aplicacao.nomeAplicacao}" required="true" 
+                                        placeholder="Ex: CDB Itaú 100% CDI" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="instituicao" value="Instituição Financeira" />
+                            <p:inputText id="instituicao" value="#{aplicacaoBean.aplicacao.instituicaoFinanceira}" required="true"
+                                        placeholder="Ex: Itaú Unibanco" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="tipo" value="Tipo de Aplicação" />
+                            <p:selectOneMenu id="tipo" value="#{aplicacaoBean.aplicacao.tipoAplicacao}">
+                                <f:selectItem itemLabel="Selecione..." itemValue="" />
+                                <f:selectItem itemLabel="CDB" itemValue="CDB" />
+                                <f:selectItem itemLabel="LCI" itemValue="LCI" />
+                                <f:selectItem itemLabel="LCA" itemValue="LCA" />
+                                <f:selectItem itemLabel="CRI" itemValue="CRI" />
+                                <f:selectItem itemLabel="CRA" itemValue="CRA" />
+                                <f:selectItem itemLabel="Debêntures" itemValue="Debentures" />
+                                <f:selectItem itemLabel="Tesouro Direto" itemValue="Tesouro Direto" />
+                                <f:selectItem itemLabel="Poupança" itemValue="Poupanca" />
+                                <f:selectItem itemLabel="Outro" itemValue="Outro" />
+                            </p:selectOneMenu>
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="valor" value="Valor Investido (R$)" />
+                            <p:inputNumber id="valor" value="#{aplicacaoBean.aplicacao.valorInvestido}" 
+                                           symbol="R$ " thousandSeparator="." decimalSeparator="," 
+                                           decimalPlaces="2" placeholder="0,00" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="percentual" value="% de Retorno" />
+                            <p:inputNumber id="percentual" value="#{aplicacaoBean.aplicacao.percentualRetorno}" 
+                                           suffix="%" decimalPlaces="2" placeholder="0,00%" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="dataApp" value="Data da Aplicação" />
+                            <p:datePicker id="dataApp" value="#{aplicacaoBean.aplicacao.dataAplicacao}" 
+                                          showIcon="true" pattern="dd/MM/yyyy" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <p:outputLabel for="dataVen" value="Data de Vencimento" />
+                            <p:datePicker id="dataVen" value="#{aplicacaoBean.aplicacao.dataVencimento}" 
+                                          showIcon="true" pattern="dd/MM/yyyy" />
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <p:outputLabel for="obs" value="Observações" />
+                            <p:inputTextarea id="obs" value="#{aplicacaoBean.aplicacao.observacoes}" 
+                                             rows="3" counter="display" maxlength="500" 
+                                             placeholder="Adicione informações relevantes sobre esta aplicação..." />
+                            <h:outputText id="display" styleClass="outputTextCount" />
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <p:commandButton value="Salvar Aplicação" action="#{aplicacaoBean.salvar}" 
+                                         update="form aplicacoesTable messages" styleClass="btn-primary">
+                            <i class="pi pi-check"></i>
+                        </p:commandButton>
+                        <p:commandButton value="Limpar" action="#{aplicacaoBean.novaAplicacao}" 
+                                         update="form" immediate="true" styleClass="btn-secondary">
+                            <i class="pi pi-refresh"></i>
+                        </p:commandButton>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-header">
+                <h3>
+                    <i class="pi pi-list"></i>
+                    Minhas Aplicações
+                </h3>
+            </div>
+            <div class="table-body">
+                <h:form id="aplicacoesTable">
+                    <p:dataTable value="#{aplicacaoBean.aplicacoes}" var="app" 
+                                 emptyMessage="Nenhuma aplicação cadastrada. Comece investindo!"
+                                 paginator="true" rows="10" 
+                                 rowsPerPageTemplate="5,10,15"
+                                 stripedRows="true"
+                                 showGridlines="false">
+                        
+                        <p:column headerText="Nome" sortBy="#{app.nomeAplicacao}">
+                            <h:outputText value="#{app.nomeAplicacao}" style="font-weight: 600;" />
+                        </p:column>
+                        
+                        <p:column headerText="Instituição" sortBy="#{app.instituicaoFinanceira}">
+                            <h:outputText value="#{app.instituicaoFinanceira}" />
+                        </p:column>
+                        
+                        <p:column headerText="Tipo" sortBy="#{app.tipoAplicacao}">
+                            <p:chip label="#{app.tipoAplicacao}" styleClass="type-chip" />
+                        </p:column>
+                        
+                        <p:column headerText="Valor Investido" sortBy="#{app.valorInvestido}">
+                            <h:outputText value="#{app.valorInvestido}" style="font-weight: 600;">
+                                <f:convertNumber type="currency" currencySymbol="R$" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column headerText="% Retorno" sortBy="#{app.percentualRetorno}">
+                            <h:outputText value="#{app.percentualRetorno}" style="color: var(--accent); font-weight: 600;">
+                                <f:convertNumber pattern="#0.00" />
+                            </h:outputText>%
+                        </p:column>
+                        
+                        <p:column headerText="Valor Retorno">
+                            <h:outputText value="#{app.valorRetorno}" style="font-weight: 600; color: var(--accent);">
+                                <f:convertNumber type="currency" currencySymbol="R$" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column headerText="Vencimento" sortBy="#{app.dataVencimento}">
+                            <h:outputText value="#{app.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column headerText="Ações" width="100">
+                            <div class="action-buttons">
+                                <p:commandButton icon="pi pi-pencil" title="Editar" 
+                                                 action="#{aplicacaoBean.editar(app)}" 
+                                                 update="form" immediate="true"
+                                                 styleClass="p-button-edit" />
+                                <p:commandButton icon="pi pi-trash" title="Excluir" 
+                                                 action="#{aplicacaoBean.excluir(app)}" 
+                                                 update="aplicacoesTable messages" immediate="true"
+                                                 styleClass="p-button-danger">
+                                    <p:confirm header="Confirmação" message="Deseja excluir esta aplicação?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                            </div>
+                        </p:column>
+                        
+                    </p:dataTable>
+                    
+                    <div class="summary-grid">
+                        <div class="summary-card invested">
+                            <h4>Total Investido</h4>
+                            <div class="value">
+                                <h:outputText value="#{aplicacaoBean.totalInvestido}">
+                                    <f:convertNumber type="currency" currencySymbol="R$" />
+                                </h:outputText>
+                            </div>
+                        </div>
+                        <div class="summary-card returns">
+                            <h4>Total Retorno</h4>
+                            <div class="value">
+                                <h:outputText value="#{aplicacaoBean.totalRetorno}">
+                                    <f:convertNumber type="currency" currencySymbol="R$" />
+                                </h:outputText>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>
+                    
+                </h:form>
+            </div>
+        </div>
+    </div>
+</h:body>
+
+</html>

@@ -1,0 +1,40 @@
+# ========================
+# Build / Deploy
+# ========================
+/target/
+*.war
+*.ear
+
+# WildFly / Tomcat / JBoss temp
+/standalone/tmp/
+/standalone/data/
+/standalone/log/
+
+# ========================
+# IDE / Editor
+# ========================
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# ========================
+# Logs
+# ========================
+*.log
+
+# ========================
+# Arquivos sensíveis / de ambiente
+# ========================
+*.properties
+*.env
+*.keystore
+*.jks
+
+# ========================
+# OpenCode - Skills temporárias ou sensíveis
+# ========================
+/skills/tmp/
+*.json       # se tiver configs sensíveis das skills
