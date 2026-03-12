@@ -422,6 +422,17 @@
 
 <h:body>
     <div class="container">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <h:form id="logoutForm" style="display: flex; align-items: center; gap: 1rem; color: white;">
+                <span style="font-size: 0.9rem;">
+                    <i class="pi pi-user"></i> Bem-vindo, #{loginBean.usuarioLogado}
+                </span>
+                <p:commandButton value="Sair" action="#{loginBean.logout}" 
+                                 styleClass="ui-button-outlined ui-button-secondary" 
+                                 icon="pi pi-sign-out" />
+            </h:form>
+        </div>
+        
         <header class="header">
             <h1>
                 <span style="display: inline-block; vertical-align: middle;">
