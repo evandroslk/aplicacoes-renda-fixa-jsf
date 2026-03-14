@@ -35,4 +35,17 @@
         <role-name>USER</role-name>
     </security-role>
 
+    <error-page>
+        <error-code>403</error-code>
+        <location>/forbidden.xhtml</location>
+    </error-page>
+
+    <data-source>
+        <name>java:global/DataSourceRendaFixa</name>
+        <class-name>org.h2.jdbcx.JdbcDataSource</class-name>
+        <url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</url>
+        <user>sa</user>
+        <password>sa</password>
+    </data-source>
+
 </web-app>

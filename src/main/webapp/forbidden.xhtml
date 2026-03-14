@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico" />
+    <title>Acesso Negado - Aplicações Renda Fixa</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #38a169;
+            --accent-hover: #2f855a;
+            --surface: #ffffff;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --danger: #e53e3e;
+            --danger-light: #fc8181;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            color: var(--text);
+        }
+
+        .forbidden-container {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 2rem);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .forbidden-card {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .forbidden-card-header {
+            background: linear-gradient(135deg, var(--danger) 0%, #c53030 100%);
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .forbidden-card-header .error-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .forbidden-card-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .forbidden-card-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .forbidden-card-body p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-home,
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(56, 161, 105, 0.4);
+        }
+
+        .btn-back {
+            background: var(--surface);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="forbidden-container">
+        <div class="forbidden-card">
+            <div class="forbidden-card-header">
+                <i class="pi pi-lock error-icon"></i>
+                <h1>Acesso Negado</h1>
+            </div>
+            <div class="forbidden-card-body">
+                <p>Você não tem permissão para acessar este recurso.<br/>
+                Entre em contato com o administrador se acredita que isso é um erro.</p>
+                
+                <div class="button-group">
+                    <h:link outcome="login" styleClass="btn-home">
+                        <i class="pi pi-home"></i>
+                        Voltar ao início
+                    </h:link>
+                    
+                    <p:commandLink action="#{facesContext.externalContext.redirect('javascript:history.back()')}" 
+                                   styleClass="btn-back"
+                                   immediate="true">
+                        <i class="pi pi-arrow-left"></i>
+                        Voltar à página anterior
+                    </p:commandLink>
+                </div>
+            </div>
+        </div>
+    </div>
+</h:body>
+
+</html>

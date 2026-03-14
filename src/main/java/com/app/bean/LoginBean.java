@@ -1,6 +1,5 @@
 package com.app.bean;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ComponentSystemEvent;
@@ -17,13 +16,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
+import jakarta.enterprise.context.RequestScoped;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class LoginBean implements Serializable {
 
     private String username;

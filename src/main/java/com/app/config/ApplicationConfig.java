@@ -10,10 +10,12 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
+import jakarta.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.annotation.security.DeclareRoles;
+import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 @FacesConfig
 @ApplicationScoped
@@ -24,18 +26,12 @@ import jakarta.annotation.security.DeclareRoles;
                 useForwardToLogin = false
         )
 )
-@InMemoryIdentityStoreDefinition({
-    @InMemoryIdentityStoreDefinition.Credentials(
-        callerName = "admin", 
-        password = "admin123", 
-        groups = {"ADMIN", "USER"}
-    ),
-    @InMemoryIdentityStoreDefinition.Credentials(
-        callerName = "pepe", 
-        password = "pepe123",
-        groups = {"USER"}
-    )
-})
+@DatabaseIdentityStoreDefinition(
+        dataSourceLookup = "java:global/DataSourceRendaFixa",
+        callerQuery = "select senha from usuario where login = ?",
+        groupsQuery = "SELECT 'USER' FROM usuario WHERE login = ?",
+        hashAlgorithm = Pbkdf2PasswordHash.class
+)
 public class ApplicationConfig {
 
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="rendaFixaPU" transaction-type="JTA">
+
+        <jta-data-source>java:global/DataSourceRendaFixa</jta-data-source>
+
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="jakarta.persistence.schema-generation.create-source" value="script"/>
+            <property name="jakarta.persistence.schema-generation.create-script-source" value="META-INF/sql/create.sql"/>
+            <property name="jakarta.persistence.sql-load-script-source" value="META-INF/sql/import.sql"/> 
+        </properties>
+
+    </persistence-unit>
+    
+</persistence>
