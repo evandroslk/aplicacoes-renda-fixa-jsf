@@ -4,91 +4,91 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ComponentSystemEvent;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import jakarta.security.enterprise.SecurityContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.inject.Inject;
+import jakarta.security.enterprise.AuthenticationStatus;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.security.enterprise.credential.UsernamePasswordCredential;
+import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class LoginBean implements Serializable {
 
-    private String usuario;
-    private String senha;
-    private Map<String, String> usuarios;
+    private String username;
 
-    @PostConstruct
-    public void init() {
-        usuarios = new HashMap<>();
-        usuarios.put("admin", "admin123");
-        usuarios.put("user", "user123");
-    }
+    private String password;
 
-    public void checkError(ComponentSystemEvent event) {
-        String errorParam = FacesContext.getCurrentInstance()
-            .getExternalContext().getRequestParameterMap().get("error");
-        if ("true".equals(errorParam)) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Você precisa fazer login para acessar esta página"));
+    @Inject
+    SecurityContext securityContext;
+
+    @Inject
+    FacesContext facesContext;
+
+    public void login() throws IOException {
+        switch(processAuthentication()){
+            case SEND_CONTINUE:
+                facesContext.responseComplete();
+                break;
+            case SEND_FAILURE:
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Credenciais inválidas", null));
+                break;
+            case SUCCESS:
+                getExternalContext().redirect(getExternalContext().getRequestContextPath() + "/app/index.xhtml");
+                break;
         }
     }
 
-    public String login() {
-        if (usuarios.containsKey(usuario) && usuarios.get(usuario).equals(senha)) {
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(false);
-            if (session == null || session.isNew()) {
-                session = (HttpSession) FacesContext.getCurrentInstance()
-                    .getExternalContext().getSession(true);
-            }
-            session.setAttribute("usuarioLogado", usuario);
-            return "index?faces-redirect=true";
-        }
-
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Usuário ou senha inválidos"));
-        return null;
+    private AuthenticationStatus processAuthentication(){
+        ExternalContext ec = getExternalContext();
+        return securityContext.authenticate((HttpServletRequest)ec.getRequest(), 
+                                            (HttpServletResponse)ec.getResponse(), 
+                                            AuthenticationParameters.withParams().credential(new UsernamePasswordCredential(username, password)));
     }
 
-    public String logout() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(
-                FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/login.xhtml");
-        } catch (Exception e) {
-            // log error
-        }
-        return null;
+    public void logout() throws IOException {
+        ExternalContext ec = facesContext.getExternalContext();
+
+        ec.invalidateSession(); // remove sessão e autenticação
+        ec.redirect(ec.getRequestContextPath() + "/login.xhtml");
+    }
+    
+    private ExternalContext getExternalContext(){
+        return facesContext.getExternalContext();
     }
 
-    public boolean isLogado() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-            .getExternalContext().getSession(false);
-        return session != null && session.getAttribute("usuarioLogado") != null;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsuarioLogado() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-            .getExternalContext().getSession(false);
-        return session != null ? (String) session.getAttribute("usuarioLogado") : null;
+        if (securityContext.getCallerPrincipal() != null) {
+            return securityContext.getCallerPrincipal().getName();
+        }
+        return null;
     }
 
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 }

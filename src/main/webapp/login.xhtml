@@ -262,14 +262,16 @@
             </div>
             <div class="login-card-body">
                 <h:form id="formLogin">
-                    <p:messages id="messages" showDetail="true" closable="true">
-                        <p:autoUpdate />
-                    </p:messages>
                     
+                    <p:defaultCommand target="btnLogin"/>
+
+                    <p:messages id="messages" showDetail="true" showSummary="false" closable="true"  />
+
                     <div class="form-group">
                         <p:outputLabel for="usuario" value="Usuário" />
                         <p:inputText id="usuario" 
-                                     value="#{loginBean.usuario}" 
+                                     widgetVar="usuarioInput"
+                                     value="#{loginBean.username}" 
                                      required="true"
                                      requiredMessage="Usuário é obrigatório"
                                      placeholder="Digite seu usuário"
@@ -279,7 +281,7 @@
                     <div class="form-group">
                         <p:outputLabel for="senha" value="Senha" />
                         <p:password id="senha" 
-                                    value="#{loginBean.senha}" 
+                                    value="#{loginBean.password}" 
                                     required="true"
                                     requiredMessage="Senha é obrigatória"
                                     placeholder="Digite sua senha"
@@ -287,19 +289,21 @@
                                     styleClass="w-full" />
                     </div>
                     
-                    <p:commandButton value="Entrar" 
+                    <p:commandButton id="btnLogin"
+                                     value="Entrar" 
                                      action="#{loginBean.login}" 
                                      update="@form"
-                                     styleClass="login-button"
-                                     icon="pi pi-check" />
+                                     styleClass="login-button" />
                 </h:form>
             </div>
         </div>
-
-        <div class="login-footer">
-            <p>Credenciais: <strong>admin</strong> / <strong>admin123</strong> ou <strong>user</strong> / <strong>user123</strong></p>
-        </div>
     </div>
 </h:body>
+
+<h:outputScript>
+    window.onload = function() {
+        PF('usuarioInput').jq.focus();
+    };
+</h:outputScript>
 
 </html>
